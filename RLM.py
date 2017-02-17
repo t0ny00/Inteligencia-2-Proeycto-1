@@ -1,5 +1,18 @@
 import numpy as np
 
+def Normalizar(array):
+    n = len(array)
+    media = sum(array)/n
+    dev_standar = 0
+    for elem in array:
+        dev_standar += (elem - media)**2
+    dev_standar = (dev_standar/(n-1))**(0.5)
+    
+    #Create normalized array
+    new_array = []
+    for elem in array:
+        new_array.append((elem - media) / dev_standar)
+    print new_array
 
 
 def GradientDescent(alpha, weights,y,x,n,numIterations):
