@@ -1,34 +1,58 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
-
-def GradientDescent(alpha, weights,y,x,n,numIterations):
-    xTrans = x.transpose()
-    for i in range (0,numIterations):
-
-        temp = np.dot(x,weights)
+def gradientDescent(x, y, weights, alpha, numIterations):
+    n = x.shape[0]
+    cost_function_plot_data = []
+    for i in range(0, numIterations):
+        temp = np.dot(x, weights)
         delta = temp - y
 
         cost = np.sum(delta ** 2) / (2 * n)
+        cost_function_plot_data = np.append(cost_function_plot_data, [i, cost], axis=0)
 
-        gradient = np.dot(xTrans, delta) / n
+        gradient = np.dot(x.transpose(), delta) / n
 
         weights = weights - alpha * gradient
-    return weights
+
+    cost_function_plot_data = cost_function_plot_data.reshape(numIterations, 2)
+    return weights, cost_function_plot_data
+
+
+def costFunctionPlot(data, numberIterations, alpha):
+    x = data[:, 0]
+    y = data[:, 1]
+    plt.plot(x, y)
+    plt.title(r'Convergence Curve for $\alpha=$' + str(alpha))
+    plt.ylabel('Cost Function Value')
+    plt.xlabel('Number of Iterations')
+    plt.show()
+
+
+def scatterPlot(x, y, weights):
+    line_point1 = np.dot(x[0], weights)
+    line_point2 = np.dot(x[-1], weights)
+    plt.title('Scatter Plot with Adjusted Curve')
+    plt.ylabel('Y Values')
+    plt.xlabel('X Values')
+    plt.plot(x[:, 1], y, 'o')
+    plt.plot([x[:, 1][0], x[-1][1]], [line_point1, line_point2], 'r-', lw=3)
+    plt.show()
 
 
 if __name__ == '__main__':
-
-    data = np.loadtxt("x01.txt")
+    data = np.loadtxt("x08.txt")
+    numberIterations = 5
+    alpha = 0.5
     numRows = data.shape[0]
     numColumns = data.shape[1]
     weights = np.zeros(numColumns-1)
     y = data[:, numColumns - 1]
     x = data[:, 1:numColumns - 1]
     x = np.insert(x,0,1,axis=1)
-    # x = np.ones(shape = (numRows,2))
-    # x[:,:1] = data[:, 1:numColumns - 1]
-    # x = np.concatenate((x,data[:, 1:numColumns - 1]),axis=0)
-    # print(x)
-    # print(weights)
-    print(GradientDescent(0.5,weights,y,x,numRows,500))
+    print (x)
+
+    a, b = gradientDescent(x, y, weights, alpha, numberIterations)
+    costFunctionPlot(b, numberIterations, alpha)
+    scatterPlot(x, y, a)

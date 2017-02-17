@@ -27,13 +27,7 @@
 #
 #      B = A1 * X1 + A2 * X2 + A3 * X3
 #
-5 columns
-20 rows
-Index
-Inhabitants
-Percent with incomes below $5000
-Percent unemployed
-Murders per annum per 1,000,000 inhabitants
+
  1   587000  16.5  6.2  11.2
  2   643000  20.5  6.4  13.4
  3   635000  26.3  9.3  40.7
