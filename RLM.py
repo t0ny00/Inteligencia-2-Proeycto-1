@@ -1,19 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def Normalizar(array):
+def Normalize(array):
     n = len(array)
-    media = sum(array)/n
-    dev_standar = 0
-    for elem in array:
-        dev_standar += (elem - media)**2
-    dev_standar = (dev_standar/(n-1))**(0.5)
-    
+    media = np.mean(array,axis=0)
+    dev_standar = np.std(array,axis=0)
+
     #Create normalized array
     new_array = []
     for elem in array:
-        new_array.append((elem - media) / dev_standar)
-    print new_array
+        temp = np.divide((elem - media) ,dev_standar)
+        new_array.append(temp)
+    out = np.asarray(new_array)
+    # print out
+    return out
 
 def gradientDescent(x, y, weights, alpha, numIterations):
     n = x.shape[0]
@@ -28,6 +28,7 @@ def gradientDescent(x, y, weights, alpha, numIterations):
         gradient = np.dot(x.transpose(), delta) / n
 
         weights = weights - alpha * gradient
+
 
     cost_function_plot_data = cost_function_plot_data.reshape(numIterations, 2)
     return weights, cost_function_plot_data
@@ -44,28 +45,30 @@ def costFunctionPlot(data, numberIterations, alpha):
 
 
 def scatterPlot(x, y, weights):
+    temp = np.dot(x,weights)
     line_point1 = np.dot(x[0], weights)
     line_point2 = np.dot(x[-1], weights)
     plt.title('Scatter Plot with Adjusted Curve')
     plt.ylabel('Y Values')
     plt.xlabel('X Values')
     plt.plot(x[:, 1], y, 'o')
-    plt.plot([x[:, 1][0], x[-1][1]], [line_point1, line_point2], 'r-', lw=3)
+    plt.plot(x,temp, 'r-', lw=3)
     plt.show()
 
 
 if __name__ == '__main__':
-    data = np.loadtxt("x08.txt")
-    numberIterations = 5
-    alpha = 0.5
+    data = np.loadtxt("x01.txt")
+    numberIterations = 10
+    alpha = 0.1
     numRows = data.shape[0]
     numColumns = data.shape[1]
     weights = np.zeros(numColumns-1)
     y = data[:, numColumns - 1]
     x = data[:, 1:numColumns - 1]
+    x = Normalize(x)
     x = np.insert(x,0,1,axis=1)
-    print (x)
-
+    # print (x)
     a, b = gradientDescent(x, y, weights, alpha, numberIterations)
+    print a
     costFunctionPlot(b, numberIterations, alpha)
     scatterPlot(x, y, a)
