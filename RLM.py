@@ -16,15 +16,28 @@ def Normalize(array):
     return out
 
 def gradientDescent(x, y, weights, alpha, numIterations):
-    n = x.shape[0]
-    cost_function_plot_data = []
-    for i in range(0, numIterations):
-        temp = np.dot(x, weights)
-        delta = temp - y
 
+    n = x.shape[0] # Number of data entries
+    cost_function_plot_data = [] # Array with the value of the cost function for each iteration
+
+    for i in range(0, numIterations):
+
+        # Calculate the product of the weights with each entry
+        hypothesis = []
+        for instance in x:
+            sum = 0
+            for j in range(instance.size):
+                sum += instance[j]*weights[j]
+            hypothesis = np.append(hypothesis,sum)
+
+        delta = hypothesis - y
+
+        # Calculate the cost function value
         cost = np.sum(delta ** 2) / (2 * n)
+        # Store the iteration number and the cost function value into an array
         cost_function_plot_data = np.append(cost_function_plot_data, [i, cost], axis=0)
 
+        # Calculate the gradient value
         gradient = np.dot(x.transpose(), delta) / n
 
         weights = weights - alpha * gradient
@@ -57,25 +70,50 @@ def scatterPlot(x, y, weights):
     plt.plot(x,temp, 'r-', lw=3)
     plt.show()
 
+def biasMetric(weights,x,y):
+    predicted_result = np.dot(x, weights)
+    delta = predicted_result - y
+    return np.average(delta)
+
+def maximumDeviationMetric(weights,x,y):
+    predicted_result = np.dot(x,weights)
+    delta= np.absolute(predicted_result-y)
+    return np.max(delta)
+
+def meanMaximumDeviationMetric(weights,x,y):
+    predicted_result = np.dot(x,weights)
+    delta= np.absolute(predicted_result-y)
+    return np.average(delta)
+
+def meanSquareErrorMetric(weights,x,y):
+    predicted_result = np.dot(x,weights)
+    delta = np.power(predicted_result - y,2)
+    return np.average(delta)
 
 if __name__ == '__main__':
     data = np.loadtxt("x01.txt")
     numberIterations = 30
     alpha = 0.1
-    numRows = data.shape[0]
-    numColumns = data.shape[1]
-    weights = np.zeros(numColumns-1)
-    y = data[:, numColumns - 1]
-    x = data[:, 1:numColumns - 1]
+    numberRows = data.shape[0]
+    numberColumns = data.shape[1]
+    weights = np.zeros(numberColumns - 1)
+    y = data[:, numberColumns - 1]
+    x = data[:, 1:numberColumns - 1]
     x = Normalize(x)
     y = Normalize(y)
+    # Add for every entry the x0=1
     x = np.insert(x,0,1,axis=1)
-    # print (x)
+
     weights, cost_function_data = gradientDescent(x, y, weights, alpha, numberIterations)
-    np.savetxt('Parte1/x01-costFunct-30Iter-' + str(alpha)+'.txt', cost_function_data, delimiter='\t')
-    np.savetxt('Parte1/x01-weights-30Iter.txt', weights.reshape(1,2), delimiter='\t')
-    temp = np.append(x,y.reshape(numRows,1),1)
-    np.savetxt('Parte1/x01-data-30Iter.txt', temp, delimiter='\t')
-    # print a
-    # costFunctionPlot(cost_function_data, numberIterations, alpha)
-    scatterPlot(x, y, weights)
+
+    print biasMetric(weights,x,y)
+    print maximumDeviationMetric(weights, x, y)
+    print meanMaximumDeviationMetric(weights,x,y)
+    print meanSquareErrorMetric(weights,x,y)
+    # np.savetxt('Parte1/x01-costFunct-30Iter-' + str(alpha)+'.txt', cost_function_data, delimiter='\t')
+    # np.savetxt('Parte1/x01-weights-30Iter.txt', weights.reshape(1,2), delimiter='\t')
+    # temp = np.append(x,y.reshape(numRows,1),1)
+    # np.savetxt('Parte1/x01-data-30Iter.txt', temp, delimiter='\t')
+    # # print a
+    # # costFunctionPlot(cost_function_data, numberIterations, alpha)
+    # scatterPlot(x, y, weights)

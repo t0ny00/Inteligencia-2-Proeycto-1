@@ -1,8 +1,8 @@
 data = read.table("x01-data-30Iter.txt")
 weights = read.table("x01-weights-30Iter.txt")
 plot(data$V2,data$V3,type = "p",pch = 19, col="blue",
-    xlab = "Brain Weight (normalized, unknown cale)",
-    ylab = "Body Weight (normalized, unknown cale)",
+    xlab = "Brain Weight (normalized, unknown scale)",
+    ylab = "Body Weight (normalized, unknown scale)",
     main = expression(paste("Weight relation between brain and body among mammals")),
     panel.first = grid())
 legend(x = 5, y = 1, 
