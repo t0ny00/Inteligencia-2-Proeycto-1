@@ -1,4 +1,4 @@
-file_in = open("AmesHousing.txt",'r')
+file_in = open("AmesHousing-clean.txt",'r')
 file_out = open("AmesHousing-clean_Nominal.txt",'w')
 
 header = file_in.readline()
