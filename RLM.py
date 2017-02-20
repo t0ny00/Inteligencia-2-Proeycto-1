@@ -71,6 +71,8 @@ def scatterPlot(x, y, weights):
     plt.show()
 
 def biasMetric(weights,x,y):
+    print x
+    print weights
     predicted_result = np.dot(x, weights)
     delta = predicted_result - y
     return np.average(delta)
@@ -91,8 +93,8 @@ def meanSquareErrorMetric(weights,x,y):
     return np.average(delta)
 
 if __name__ == '__main__':
-    data = np.loadtxt("x01.txt")
-    numberIterations = 30
+    data = np.loadtxt("AmesHousing-training_set2.txt")
+    numberIterations = 30   
     alpha = 0.1
     numberRows = data.shape[0]
     numberColumns = data.shape[1]
@@ -104,12 +106,29 @@ if __name__ == '__main__':
     # Add for every entry the x0=1
     x = np.insert(x,0,1,axis=1)
 
+    data_test = np.loadtxt("AmesHousing-test_set2.txt")
+    numberRows2 = data_test.shape[0]
+    numberColumns2 = data_test.shape[1]
+    y2 = data_test[:, numberColumns2 - 1]
+    x2 = data_test[:, 1:numberColumns2 - 1]
+    x2 = Normalize(x2)
+    y2 = Normalize(y2)
+    # Add for every entry the x0=1
+    x2 = np.insert(x2,0,1,axis=1)
+
     weights, cost_function_data = gradientDescent(x, y, weights, alpha, numberIterations)
 
     print biasMetric(weights,x,y)
     print maximumDeviationMetric(weights, x, y)
     print meanMaximumDeviationMetric(weights,x,y)
     print meanSquareErrorMetric(weights,x,y)
+
+    print 'Using data_test'
+    print biasMetric(weights,x2,y2)
+    print maximumDeviationMetric(weights, x2, y2)
+    print meanMaximumDeviationMetric(weights,x2,y2)
+    print meanSquareErrorMetric(weights,x2,y2)
+
     # np.savetxt('Parte1/x01-costFunct-30Iter-' + str(alpha)+'.txt', cost_function_data, delimiter='\t')
     # np.savetxt('Parte1/x01-weights-30Iter.txt', weights.reshape(1,2), delimiter='\t')
     # temp = np.append(x,y.reshape(numRows,1),1)
