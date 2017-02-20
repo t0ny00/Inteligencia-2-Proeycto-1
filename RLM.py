@@ -71,8 +71,6 @@ def scatterPlot(x, y, weights):
     plt.show()
 
 def biasMetric(weights,x,y):
-    print x
-    print weights
     predicted_result = np.dot(x, weights)
     delta = predicted_result - y
     return np.average(delta)
